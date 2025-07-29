@@ -7,6 +7,8 @@ if [ -z "$JSONBINKEY" ]; then
 fi
 
 chmod +x ./proxy_gost_cf.sh
+sed -i s#/home/ubuntu/.bashrc#/home/$USER/.bashrc# ./proxy_gost_cf.sh
+
 sudo cp ./proxy_gost_cf.sh /bin/proxy_gost_cf.sh
 
 chmod 644 ./cron_proxy_gost_cf

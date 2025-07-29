@@ -1,5 +1,22 @@
 #!/bin/bash
+source /home/ubuntu/.bashrc
 
+if [ -f "/home/ubuntu/.bashrc" ]; then
+  . "/home/ubuntu/.bashrc"
+  JSONBINKEY=$(grep -oP '(?<=^export JSONBINKEY=).*' /home/ubuntu/.bashrc)
+
+  temp="${JSONBINKEY%\"}"
+  JSONBINKEY="${temp#\"}"
+
+  if [ -z "$JSONBINKEY" ]; then
+    echo "JSONBINKEY environment variable is not set in .bashrc."
+    exit 1
+  fi
+
+
+fi
+# Ensure the user's .bashrc is sourced
+# Check if JSONBINKEY is set
 if [ -z "$JSONBINKEY" ]; then
     echo "JSONBINKEY environment variable is not set."
     exit 1
