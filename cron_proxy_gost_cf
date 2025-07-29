@@ -1,2 +1,0 @@
-@reboot ubuntu /bin/proxy_gost_cf.sh
-* */3 * * * ubuntu /bin/proxy_gost_cf.sh
