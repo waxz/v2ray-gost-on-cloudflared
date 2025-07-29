@@ -9,10 +9,11 @@ fi
 chmod +x ./proxy_gost_cf.sh
 sudo cp ./proxy_gost_cf.sh /bin/proxy_gost_cf.sh
 
-chmod 644 ./proxy_gost_cf.job
-sudo cp ./proxy_gost_cf.job /etc/cron.d/
+chmod 644 ./cron_proxy_gost_cf
+sudo cp ./cron_proxy_gost_cf /etc/cron.d/
 
-sudo service cron restart
+# sudo service cron restart
+sudo systemctl restart cron
 
 echo "proxy_gost_cf.sh installed successfully."
 echo "starting proxy_gost_cf.sh"
