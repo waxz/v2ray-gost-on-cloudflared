@@ -1,3 +1,4 @@
+SHELL=/bin/bash
 @reboot ubuntu /bin/proxy_gost_cf.sh
-* */8 * * * ubuntu /bin/proxy_gost_cf.sh
 @reboot ubuntu /bin/proxy_gost_pinggy.sh
+*/3 * * * * ubuntu /bin/vps_auto_reboot.s
