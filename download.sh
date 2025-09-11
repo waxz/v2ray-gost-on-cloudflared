@@ -13,3 +13,8 @@ tar -xvf /tmp/trzsz.tar.gz -C /tmp/trzsz/ --strip-component=1
 sudo cp /tmp/trzsz/* /bin
 # ttyd -W -t enableTrzsz=true bash
 # 浏览器打开 ttyd 终端，trz 命令上传文件，tsz xxx 命令下载 xxx 文件
+
+# ddns
+gh_install NewFuture/DDNS ddns-glibc-linux_amd64 /tmp/ddns
+chmod +x /tmp/ddns 
+sudo cp /tmp/ddns /bin
