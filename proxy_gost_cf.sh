@@ -119,7 +119,7 @@ if [ -s /tmp/cloudflared-ttyd.out ]; then
             printf "\b${sp:i++%${#sp}:1}";
         else
             cloudflared_ttyd_url="$cloudflared_ttyd_url_new" ;
-            curl -s https://jsonbin.1248369.xyz/ttyd/aws/?key=$JSONBINKEY -d "{\"url\":\"$cloudflared_ttyd_url\"}"
+            curl -s https://jsonbin.1248369.xyz/ttyd/aws/?key=$JSONBINKEY -d "{\"url\":\"https://$cloudflared_ttyd_url\"}"
         fi
         echo "Cloudflared ttyd URL found:" $cloudflared_ttyd_url;
         cmd=$(echo $cmd_content | jq -r ".ttyd_cmd")
