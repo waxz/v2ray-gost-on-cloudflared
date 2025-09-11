@@ -10,7 +10,7 @@ Write-Host "JSONBINKEY environment variable is set to $JSONBINKEY"
 # A try-catch block is used to handle potential errors during the request.
 try {
     # Invoke-RestMethod automatically handles the request and parses the JSON.
-    $response = Invoke-RestMethod -Uri "https://jsonbin.1248369.xyz/proxy/cf/?key=$JSONBINKEY"
+    $response = Invoke-RestMethod -Uri "https://jsonbin.pages.dev/proxy/cf/?key=$JSONBINKEY"
     $url = $response.url
 } catch {
     # If the web request fails, print the error and ensure $url is null.
@@ -68,7 +68,9 @@ chains:
 "@
 
 # Write the dynamic content to the file
-Set-Content -Path "$PWD\config.yml" -Value $yamlContent
+Write-Host "yamlContent: $yamlContent"
+Set-Content -Path "$PWD\config.yaml" -Value $yamlContent
+
 
 # 6. Execute the gost command with the correctly formed argument.
 # We now use the variable for the -F flag and match the original script's syntax (-L=:...).
