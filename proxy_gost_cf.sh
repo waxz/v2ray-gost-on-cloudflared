@@ -41,7 +41,7 @@ nohup bash -c "cloudflared tunnel --url localhost:38022   > /tmp/cloudflared-ssh
 
 sleep 10
 # ttyd server
-nohup bash -c "ttyd -W -p 38033 bash" > /tmp/websocat-ttyd.out 2>&1 &
+nohup bash -c "ttyd -W -p 38033 -t enableTrzsz=true -c $JSONBINKEY:$JSONBINKEY bash" > /tmp/websocat-ttyd.out 2>&1 &
 nohup bash -c "cloudflared tunnel --url localhost:38033   > /tmp/cloudflared-ttyd.out 2>&1" > /tmp/cloudflared-ttyd.nohup.out 2>&1 &
 
 
