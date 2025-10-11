@@ -18,3 +18,6 @@ sudo cp /tmp/trzsz/* /bin
 gh_install NewFuture/DDNS ddns-glibc-linux_amd64 /tmp/ddns
 chmod +x /tmp/ddns 
 sudo cp /tmp/ddns /bin
+
+# sshx
+curl -sSf https://sshx.io/get | sh
