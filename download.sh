@@ -11,6 +11,10 @@ mkdir /tmp/gost
 tar -xvf /tmp/gost.tar.gz -C /tmp/gost
 sudo cp /tmp/gost/gost /bin
 
+gh_install vi/websocat websocat.x86_64-unknown-linux-musl /tmp/websocat && chmod +x /tmp/websocat
+sudo cp /tmp/websocat /bin
+
+
 gh_install cloudflare/cloudflared cloudflared-linux-amd64  /tmp/cloudflared && chmod +x /tmp/cloudflared
 sudo cp /tmp/cloudflared /bin
 
