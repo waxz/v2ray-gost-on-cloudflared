@@ -1,5 +1,9 @@
 # bash_scripts
-scripts to setup tools like proxy on linux/windows
+scripts to setup proxy on linux/windows
+
+- gost server/client over cloudflare tunnel
+- v2raya on windows
+- tor on linux
 
 ## windows
 
