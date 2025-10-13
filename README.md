@@ -1,5 +1,21 @@
 # bash_scripts
+scripts to setup tools like proxy on linux/windows
 
+## windows
+
+### setup v2raya
+```shell
+./download_v2raya.ps1
+
+./run_v2ray.ps1
+```
+
+### setup gost proxy client
+```shell
+./proxy_gost_cf.ps1
+```
+
+## linux
 
 ### cron
 https://askubuntu.com/questions/2368/how-do-i-set-up-a-cron-job
