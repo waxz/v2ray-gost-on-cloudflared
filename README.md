@@ -30,9 +30,10 @@ https://<YOUR_JSONBIN_DOMAIN>/ttyd/aws/?key=<YOUR_JSONBINKEY>&redirect=1
 
 ## linux
 
-### setup gost proxy server
+### install cron jobs to start gost server
+
 ```bash
-./proxy_gost_cf.sh
+./install_proxy_gost_cf.sh
 ```
 
 ### setup gost proxy client
