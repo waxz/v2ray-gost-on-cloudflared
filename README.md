@@ -6,6 +6,14 @@ scripts to setup proxy on linux/windows, cloudflared tunnel urls are stored in [
 - v2raya on windows
 - tor on linux
 
+
+## web
+
+### ttyd
+visit your jsonbin domain
+```
+https://<YOUR_JSONBIN_DOMAIN>/ttyd/aws/?key=<YOUR_JSONBINKEY>&redirect=1
+```
 ## windows
 
 ### setup v2raya
