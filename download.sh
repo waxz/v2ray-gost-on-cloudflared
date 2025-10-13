@@ -1,10 +1,18 @@
 #!/bin/bash
-
+source ./bash_utils.sh
 
 # tty on web
 gh_install tsl0922/ttyd ttyd.x86_64 /tmp/ttyd && chmod +x /tmp/ttyd
 sudo cp /tmp/ttyd /bin
 # ttyd -W -p 38033 bash
+
+gh_install go-gost/gost  linux_amd64.tar.gz /tmp/gost.tar.gz
+mkdir /tmp/gost
+tar -xvf /tmp/gost.tar.gz -C /tmp/gost
+sudo cp /tmp/gost/gost /bin
+
+gh_install cloudflare/cloudflared cloudflared-linux-amd64  /tmp/cloudflared && chmod +x /tmp/cloudflared
+sudo cp /tmp/cloudflared /bin
 
 # https://trzsz.github.io/cn/
 gh_install trzsz/trzsz-go linux_x86_64.tar.gz /tmp/trzsz.tar.gz
