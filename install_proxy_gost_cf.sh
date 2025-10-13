@@ -16,6 +16,10 @@ sed -i s#/home/ubuntu/.bashrc#/home/$USER/.bashrc# ./proxy_gost_pinggy.sh
 
 sudo cp ./proxy_gost_pinggy.sh /bin/
 
+chmod +x ./vps_auto_reboot.sh
+sudo cp ./vps_auto_reboot.sh /bin/
+
+
 chmod 644 ././cron_proxy_gost_cf_pinggy
 sed -i s#ubuntu#$USER# ././cron_proxy_gost_cf_pinggy
 sudo cp ././cron_proxy_gost_cf_pinggy /etc/cron.d/
