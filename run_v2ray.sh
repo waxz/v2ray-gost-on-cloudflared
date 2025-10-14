@@ -1,6 +1,21 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [ -f "/home/ubuntu/.bashrc" ]; then
+  . "/home/ubuntu/.bashrc"
+  JSONBINKEY=$(grep -oP '(?<=^export JSONBINKEY=).*' /home/ubuntu/.bashrc)
+
+  temp="${JSONBINKEY%\"}"
+  JSONBINKEY="${temp#\"}"
+
+  if [ -z "$JSONBINKEY" ]; then
+    echo "JSONBINKEY environment variable is not set in .bashrc."
+    exit 1
+  fi
+
+
+fi
+
 # ------------------ Configurable ------------------
 PORT=10000
 WS_PATH="/ray"

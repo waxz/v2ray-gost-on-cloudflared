@@ -20,11 +20,13 @@ chmod +x ./vps_auto_reboot.sh
 sudo cp ./vps_auto_reboot.sh /bin/
 
 chmod +x ./run_v2ray.sh
+sed -i s#/home/ubuntu/.bashrc#/home/$USER/.bashrc# ./run_v2ray.sh
+
 sudo cp ./run_v2ray.sh /bin/
 
-chmod 644 ././cron_proxy_gost_cf_pinggy
-sed -i s#ubuntu#$USER# ././cron_proxy_gost_cf_pinggy
-sudo cp ././cron_proxy_gost_cf_pinggy /etc/cron.d/
+chmod 644 ./cron_proxy_jobs
+sed -i s#ubuntu#$USER# ./cron_proxy_jobs
+sudo cp ./cron_proxy_jobs /etc/cron.d/
 
 # sudo service cron restart
 sudo systemctl restart cron
