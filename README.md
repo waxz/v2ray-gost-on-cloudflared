@@ -1,7 +1,8 @@
 # bash_scripts
 scripts to setup proxy on linux/windows, cloudflared tunnel urls are stored in [JSONBIN](https://github.com/waxz/json-bin)
 
-- gost server/client over cloudflare tunnel
+- gost server/client over cloudflare tunnel, [proxy_gost_cf.sh](proxy_gost_cf.sh)
+- v2ray server over cloudflare tunnel, [run_v2ray.sh](run_v2ray.sh)
 - ssh/ttyd over cloudflare tunnel
 - v2raya on windows
 - tor on linux
@@ -14,6 +15,11 @@ visit your jsonbin domain
 ```
 https://<YOUR_JSONBIN_DOMAIN>/ttyd/aws/?key=<YOUR_JSONBINKEY>&redirect=1
 ```
+## v2ray subscription
+```
+https://<YOUR_JSONBIN_DOMAIN>/v2ray/aws/?key=<YOUR_JSONBINKEY>&q=sub
+```
+
 ## windows
 
 ### setup v2raya
@@ -35,6 +41,7 @@ https://<YOUR_JSONBIN_DOMAIN>/ttyd/aws/?key=<YOUR_JSONBINKEY>&redirect=1
 ```bash
 ./install_proxy_gost_cf.sh
 ```
+
 
 ### setup gost proxy client
 ```bash

@@ -19,6 +19,8 @@ sudo cp ./proxy_gost_pinggy.sh /bin/
 chmod +x ./vps_auto_reboot.sh
 sudo cp ./vps_auto_reboot.sh /bin/
 
+chmod +x ./run_v2ray.sh
+sudo cp ./run_v2ray.sh /bin/
 
 chmod 644 ././cron_proxy_gost_cf_pinggy
 sed -i s#ubuntu#$USER# ././cron_proxy_gost_cf_pinggy
