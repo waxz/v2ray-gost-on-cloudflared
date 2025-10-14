@@ -66,7 +66,7 @@ if [ -s /tmp/pinggy.out ]; then
             echo "not updated" ; 
         else 
             pinggy_url="$pinggy_url_new" ;
-            curl -s https://jsonbin.1248369.xyz/proxy/pinggy/?key=$JSONBINKEY -d "{\"url\":\"$pinggy_url\"}"
+            curl -s "https://jsonbin.1248369.xyz/proxy/pinggy/?key=$JSONBINKEY" -d "{\"url\":\"$pinggy_url\"}"
         fi
 
         echo "Pinggy URL found:" $pinggy_url;
@@ -83,7 +83,7 @@ if [ -s /tmp/pinggy_ssh.out ]; then
             echo "not updated" ; 
         else 
             pinggy_ssh_url="$pinggy_ssh_url_new" ;
-            curl -s https://jsonbin.1248369.xyz/ssh/pinggy/?key=$JSONBINKEY -d "{\"url\":\"$pinggy_ssh_url\"}"
+            curl -s "https://jsonbin.1248369.xyz/ssh/pinggy/?key=$JSONBINKEY" -d "{\"url\":\"$pinggy_ssh_url\"}"
         fi
         echo "Pinggy SSH URL found:" $pinggy_ssh_url;
     fi

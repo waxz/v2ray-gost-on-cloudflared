@@ -31,7 +31,7 @@ ps -A -o tid,cmd  | grep -v grep | grep "cloudflared tunnel --url localhost:3802
 
 
 #  gost proxy
-nohup bash -c "gost -L=mws://:38083?enableCompression=true&keepAlive=true&idletimeout=30s&readBufferSize=64KB" > /tmp/gost.2.out 2>&1 &
+nohup bash -c "gost -L='mws://:38083?enableCompression=true&keepAlive=true&idletimeout=30s&readBufferSize=64KB'" > /tmp/gost.2.out 2>&1 &
 nohup bash -c "cloudflared tunnel --url localhost:38083   > /tmp/cloudflared.out 2>&1" > /tmp/cloudflared.nohup.out 2>&1 &
 
 sleep 10
@@ -56,7 +56,7 @@ echo -n ' '
 
 while [ "true" ];do 
 
-    cmd_content=$(curl -s https://jsonbin.1248369.xyz/aws/cmd?key=$JSONBINKEY)
+    cmd_content=$(curl -s "https://jsonbin.1248369.xyz/aws/cmd?key=$JSONBINKEY")
 
 
     if [ -s /tmp/cloudflared.out ]; then
@@ -69,13 +69,13 @@ while [ "true" ];do
                 printf "\b${sp:i++%${#sp}:1}";
             else
                 cloudflared_url="$cloudflared_url_new" ;
-                curl -s https://jsonbin.1248369.xyz/proxy/cf/?key=$JSONBINKEY -d "{\"url\":\"$cloudflared_url\"}"
+                curl -s "https://jsonbin.1248369.xyz/proxy/cf/?key=$JSONBINKEY" -d "{\"url\":\"$cloudflared_url\"}"
             fi
             echo "Cloudflared URL found:" $cloudflared_url;
             cmd=$(echo $cmd_content | jq -r ".proxy_cmd")
             
             if [ "restart" == "$cmd" ]; then
-                curl -s https://jsonbin.1248369.xyz/aws/cmd?key=$JSONBINKEY -d "{}"
+                curl -s "https://jsonbin.1248369.xyz/aws/cmd?key=$JSONBINKEY" -d "{}"
                 echo "Running command: ${cmd}"
                 rm /tmp/cloudflared.out
                 ps -A -o tid,cmd  | grep -v grep | grep "cloudflared tunnel --url localhost:38083" | awk '{print $1}' | xargs -I {} /bin/bash -c ' kill -9  {} '
@@ -94,13 +94,13 @@ if [ -s /tmp/cloudflared-ssh.out ]; then
             printf "\b${sp:i++%${#sp}:1}";
         else
             cloudflared_ssh_url="$cloudflared_ssh_url_new" ;
-            curl -s https://jsonbin.1248369.xyz/ssh/cf/?key=$JSONBINKEY -d "{\"url\":\"$cloudflared_ssh_url\"}"
+            curl -s "https://jsonbin.1248369.xyz/ssh/cf/?key=$JSONBINKEY" -d "{\"url\":\"$cloudflared_ssh_url\"}"
         fi
         echo "Cloudflared SSH URL found:" $cloudflared_ssh_url;
         cmd=$(echo $cmd_content | jq -r ".ssh_cmd")
         
         if [ "restart" == "$cmd" ]; then
-            curl -s https://jsonbin.1248369.xyz/aws/cmd?key=$JSONBINKEY -d "{}"
+            curl -s "https://jsonbin.1248369.xyz/aws/cmd?key=$JSONBINKEY" -d "{}"
             echo "Running command: ${cmd}"
             rm /tmp/cloudflared-ssh.out
             ps -A -o tid,cmd  | grep -v grep | grep "cloudflared tunnel --url localhost:38022" | awk '{print $1}' | xargs -I {} /bin/bash -c ' kill -9  {} '
@@ -119,13 +119,13 @@ if [ -s /tmp/cloudflared-ttyd.out ]; then
             printf "\b${sp:i++%${#sp}:1}";
         else
             cloudflared_ttyd_url="$cloudflared_ttyd_url_new" ;
-            curl -s https://jsonbin.1248369.xyz/ttyd/aws/?key=$JSONBINKEY -d "{\"url\":\"https://$cloudflared_ttyd_url\"}"
+            curl -s "https://jsonbin.1248369.xyz/ttyd/aws/?key=$JSONBINKEY" -d "{\"url\":\"https://$cloudflared_ttyd_url\"}"
         fi
         echo "Cloudflared ttyd URL found:" $cloudflared_ttyd_url;
         cmd=$(echo $cmd_content | jq -r ".ttyd_cmd")
         
         if [ "restart" == "$cmd" ]; then
-            curl -s https://jsonbin.1248369.xyz/aws/cmd?key=$JSONBINKEY -d "{}"
+            curl -s "https://jsonbin.1248369.xyz/aws/cmd?key=$JSONBINKEY" -d "{}"
             echo "Running command: ${cmd}"
             rm /tmp/cloudflared-ttyd.out
             ps -A -o tid,cmd  | grep -v grep | grep "cloudflared tunnel --url localhost:38033" | awk '{print $1}' | xargs -I {} /bin/bash -c ' kill -9  {} '

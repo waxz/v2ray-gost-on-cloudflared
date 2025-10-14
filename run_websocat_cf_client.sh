@@ -4,7 +4,7 @@ if [ -z "$JSONBINKEY" ]; then
     exit 1
 fi  
 
-url=$(curl  -s https://jsonbin.1248369.xyz/ssh/cf/?key=$JSONBINKEY | jq -r ".url")
+url=$(curl -s "https://jsonbin.1248369.xyz/ssh/cf/?key=$JSONBINKEY" | jq -r ".url")
 if [[ -z $url ]]; then echo $? ; echo "" ; exit 0; fi
 
 
