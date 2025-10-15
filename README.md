@@ -24,14 +24,14 @@ https://<YOUR_JSONBIN_DOMAIN>/v2ray/aws/?key=<YOUR_JSONBINKEY>&q=sub
 
 ### setup v2raya
 ```shell
-./download_v2raya.ps1
+sudo -E bash ./download_v2raya.ps1
 
-./run_v2ray.ps1
+sudo -E bash ./run_v2ray.ps1
 ```
 
 ### setup gost proxy client
 ```shell
-./proxy_gost_cf.ps1
+sudo -E bash ./proxy_gost_cf.ps1
 ```
 
 ## linux
@@ -39,7 +39,7 @@ https://<YOUR_JSONBIN_DOMAIN>/v2ray/aws/?key=<YOUR_JSONBINKEY>&q=sub
 ### install cron jobs to start gost server
 
 ```bash
-./install_proxy_gost_cf.sh
+sudo -E bash ./install_proxy_gost_cf.sh
 ```
 
 
