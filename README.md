@@ -36,10 +36,24 @@ sudo -E bash ./proxy_gost_cf.ps1
 
 ## linux
 
+add enviorment to ~/.bashrc 
+
+```bash
+export JSONBINKEY="yourapi"
+export JSONBINURL="https://yoururl.xyz"
+export JSONBINV2RAYPATH="yourpath"
+```
+
 ### install cron jobs to start gost server
 
 ```bash
 sudo -E bash ./install_proxy_gost_cf.sh
+```
+
+### run v2ray and cloudflared tunnel
+
+```bash
+sudo -E bash ./run_v2ray.sh 
 ```
 
 

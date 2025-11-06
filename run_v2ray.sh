@@ -1,20 +1,39 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+source ./bash_utils.sh
+
 if [ -f "/home/ubuntu/.bashrc" ]; then
   . "/home/ubuntu/.bashrc"
   JSONBINKEY=$(grep -oP '(?<=^export JSONBINKEY=).*' /home/ubuntu/.bashrc)
-
   temp="${JSONBINKEY%\"}"
   JSONBINKEY="${temp#\"}"
+
+  JSONBINURL=$(grep -oP '(?<=^export JSONBINURL=).*' /home/ubuntu/.bashrc)
+  temp="${JSONBINURL%\"}"
+  JSONBINURL="${temp#\"}"
+
+  JSONBINV2RAYPATH=$(grep -oP '(?<=^export JSONBINV2RAYPATH=).*' /home/ubuntu/.bashrc)
+  temp="${JSONBINV2RAYPATH%\"}"
+  JSONBINV2RAYPATH="${temp#\"}"
+
+
+
+fi
 
   if [ -z "$JSONBINKEY" ]; then
     echo "JSONBINKEY environment variable is not set in .bashrc."
     exit 1
   fi
-
-
-fi
+  if [ -z "$JSONBINURL" ]; then
+    echo "JSONBINURL environment variable is not set in .bashrc."
+    exit 1
+  fi
+  if [ -z "$JSONBINV2RAYPATH" ]; then
+    echo "JSONBINV2RAYPATH environment variable is not set in .bashrc."
+    exit 1
+  fi
+  
 
 # ------------------ Configurable ------------------
 PORT=10000
@@ -23,6 +42,7 @@ SUB_JSON_PATH="/tmp/sub.json"
 SUB_VMESS_PATH="/tmp/sub_vmess.txt"
 V2_CONFIG_PATH="/usr/local/etc/v2ray/config.json"
 V2_LOG_DIR="/var/log/v2ray"
+V2RAY_LOG="/tmp/v2ray.log"
 CLOUDFLARED_LOG="/tmp/cloudflared-tunnel.log"
 CLOUDFLARED_PID_FILE="/var/run/cloudflared-tunnel.pid"
 WAIT_TIMEOUT=60
@@ -50,12 +70,9 @@ fi
 
 echo "=== 2. Kill existing processes using port $PORT ==="
 
-EXISTING_CF_PIDS=$(pgrep -f "cloudflared tunnel --url localhost:$PORT" || true)
-if [ -n "$EXISTING_CF_PIDS" ]; then
-  echo "Killing existing cloudflared processes: $EXISTING_CF_PIDS"
-  kill -9 $EXISTING_CF_PIDS
-  sleep 1
-fi
+kill_program "cloudflared tunnel --url localhost:$PORT"
+kill_program "v2ray run -c $V2_CONFIG_PATH"
+
 
 # --- 3. Install V2Ray if missing ---
 if [ "$V2_INSTALLED" = false ]; then
@@ -128,8 +145,10 @@ cat >"$V2_CONFIG_PATH" <<EOF
 EOF
 
 # --- 7. Enable & restart V2Ray ---
-systemctl enable v2ray || true
-systemctl restart v2ray
+# systemctl enable v2ray || true
+# systemctl restart v2ray
+
+nohup setsid v2ray run -c $V2_CONFIG_PATH >"$V2RAY_LOG" 2>&1 &
 
 sleep 1
 if ss -ltnp | grep -q ":$PORT\\b"; then
@@ -228,4 +247,4 @@ echo "cloudflared log: $CLOUDFLARED_LOG"
 cat $CLOUDFLARED_LOG
 cat $SUB_JSON_PATH
 cat $SUB_VMESS_PATH
-curl "https://jsonbin.1248369.xyz/v2ray/aws/?key=$JSONBINKEY&q=sub" -d @$SUB_VMESS_PATH
+curl "$JSONBINURL/$JSONBINV2RAYPATH/?key=$JSONBINKEY&q=sub" -d @$SUB_VMESS_PATH

@@ -1,8 +1,5 @@
 # gh_install vi/websocat websocat.x86_64-unknown-linux-musl
 gh_install() {
-  echo "Number of arguments: $#"
-  echo "All arguments as separate words: $@"
-  echo "All arguments as a single string: $*"
 
   if [[ $# -ne 3 ]]; then
     echo "Please set repo, arch, and filename"
@@ -35,9 +32,6 @@ gh_install() {
 
 # Utility functions for managing processes
 ps_kill() {
-  echo "Number of arguments: $#"
-  echo "All arguments as separate words: $@"
-  echo "All arguments as a single string: $*"
 
   if [[ $# -ne 1 ]]; then
     echo "Please set program"
@@ -46,6 +40,23 @@ ps_kill() {
   program="$1"
 
   ps -A -o tid,cmd  | grep -v grep | grep "$program" | awk '{print $1}' | xargs -I {} /bin/bash -c ' sudo kill -9  {} '
+}
+
+kill_program(){
+
+  if [[ $# -ne 1 ]]; then
+    echo "Please set program"
+    return 1
+  fi
+  program="$1"
+
+  EXISTING_PIDS=$(pgrep -f "$program" || true)
+if [ -n "$EXISTING_PIDS" ]; then
+  echo "Killing existing $program processes: $EXISTING_PIDS"
+  kill -9 $EXISTING_PIDS
+  sleep 1
+fi
+
 }
 
 histclean() {
