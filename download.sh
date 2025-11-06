@@ -1,6 +1,25 @@
 #!/bin/bash
 source ./bash_utils.sh
 
+#=== 1. Ensure libraries Installed ===#
+libs=("jq" "curl" "git")
+
+# Iterate over the array elements
+for item in "${libs[@]}"; do
+  echo "Processing item: $item"
+  if ! command -v $item &>/dev/null; then
+  echo "🌀 Installing $item..."
+  apt update && apt install -y $item
+else
+  echo "✅ $item is already installed"
+fi
+done
+
+
+
+
+
+
 # tty on web
 gh_install tsl0922/ttyd ttyd.x86_64 /tmp/ttyd && chmod +x /tmp/ttyd
 sudo cp /tmp/ttyd /bin
