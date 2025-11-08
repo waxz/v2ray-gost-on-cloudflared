@@ -1,25 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-source ./bash_utils.sh
+source /bin/bash_utils.sh
+BASHRC="/home/codespace/.bashrc"
 
-if [ -f "/home/ubuntu/.bashrc" ]; then
-  . "/home/ubuntu/.bashrc"
-  JSONBINKEY=$(grep -oP '(?<=^export JSONBINKEY=).*' /home/ubuntu/.bashrc)
-  temp="${JSONBINKEY%\"}"
-  JSONBINKEY="${temp#\"}"
-
-  JSONBINURL=$(grep -oP '(?<=^export JSONBINURL=).*' /home/ubuntu/.bashrc)
-  temp="${JSONBINURL%\"}"
-  JSONBINURL="${temp#\"}"
-
-  JSONBINV2RAYPATH=$(grep -oP '(?<=^export JSONBINV2RAYPATH=).*' /home/ubuntu/.bashrc)
-  temp="${JSONBINV2RAYPATH%\"}"
-  JSONBINV2RAYPATH="${temp#\"}"
+# ✅ assign all extracted variables into the shell
+while IFS='=' read -r k v; do
+    # skip empty lines
+    [ -z "$k" ] && continue
+    export "$k=$v"
+done < <(extract_all_env)
 
 
-
-fi
 
   if [ -z "$JSONBINKEY" ]; then
     echo "JSONBINKEY environment variable is not set in .bashrc."

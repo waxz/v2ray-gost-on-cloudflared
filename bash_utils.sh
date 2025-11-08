@@ -63,3 +63,50 @@ histclean() {
   history | awk '{$1=""; print substr($0,2)}'
 }
 
+
+extract_var() {
+    if [[ $# -ne 2 ]]; then
+    echo "Please var-file var-name"
+    return 1
+  fi
+
+    local BASHRC="$1"
+    local var="$2"
+    local raw
+
+    raw=$(grep -E "^export ${var}=|^${var}=" "$BASHRC" \
+        | head -n1 \
+        | sed -E "s/^(export +)?${var}=//")
+
+    # Trim leading/trailing spaces
+    raw=$(echo "$raw" | sed -E 's/^[ \t]+|[ \t]+$//g')
+
+    # Remove ONE matching pair of quotes if present
+    raw=$(echo "$raw" | sed -E 's/^"(.*)"$/\1/; s/^'\''(.*)'\''$/\1/')
+
+    # ALSO remove any dangling quotes like: abc" or "abc
+    raw=$(echo "$raw" | sed -E 's/^"//; s/"$//; s/^'\''//; s/'\''$//')
+
+    echo "$raw"
+}
+
+
+extract_all_env() {
+    grep -E '^(export +)?[A-Za-z_][A-Za-z0-9_]*=' "$BASHRC" \
+    | sed -E 's/#.*$//' \
+    | sed -E 's/^[ \t]+|[ \t]+$//g' \
+    | while IFS= read -r line; do
+
+        # Remove "export "
+        line=$(echo "$line" | sed -E 's/^export +//')
+
+        key="${line%%=*}"
+        val="${line#*=}"
+
+        # Strip surrounding quotes
+        val=$(echo "$val" | sed -E 's/^"(.*)"$/\1/; s/^'\''(.*)'\''$/\1/')
+        val=$(echo "$val" | sed -E 's/^"//; s/"$//; s/^'\''//; s/'\''$//')
+
+        printf "%s=%s\n" "$key" "$val"
+    done
+}
