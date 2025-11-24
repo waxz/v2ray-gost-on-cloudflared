@@ -20,7 +20,7 @@ done
 
 
 
-# tty on web
+# ttyd on web
 gh_install tsl0922/ttyd ttyd.x86_64 /tmp/ttyd && chmod +x /tmp/ttyd
 cp /tmp/ttyd /bin
 # ttyd -W -p 38033 bash
@@ -52,3 +52,13 @@ cp /tmp/ddns /bin
 
 # sshx
 curl -sSf https://sshx.io/get | sh
+
+# openlist
+gh_install OpenListTeam/OpenList openlist-linux-amd64.tar.gz /tmp/openlist.tar.gz
+mkdir /tmp/openlist
+tar -xvf /tmp/openlist.tar.gz -C /tmp/openlist
+cp /tmp/openlist/openlist /bin
+
+# filen
+curl -sL https://filen.io/cli.sh | bash
+cp ~/.filen-cli/bin/filen /bin

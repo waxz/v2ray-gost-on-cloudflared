@@ -1,5 +1,6 @@
 SHELL=/bin/bash
-@reboot ubuntu /bin/proxy_gost_cf.sh
-@reboot ubuntu /bin/proxy_gost_pinggy.sh
-@reboot ubuntu /bin/run_v2ray.sh
-*/3 * * * * ubuntu /bin/vps_auto_reboot.s
+# @reboot root /bin/proxy_gost_cf.sh
+# @reboot root /bin/proxy_gost_pinggy.sh
+@reboot root /bin/setup_v2ray.sh
+@reboot root /bin/setup_ttyd.sh
+*/3 * * * * root /bin/vps_auto_reboot.sh

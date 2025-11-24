@@ -1,3 +1,5 @@
+#!/bin/bash
+# Utility functions for bash scripts
 # gh_install vi/websocat websocat.x86_64-unknown-linux-musl
 gh_install() {
 
@@ -12,7 +14,7 @@ gh_install() {
 
   echo "Set repo: $repo, arch: $arch, filename: $filename"
 
-  local url
+  local url=""
   local count=0
 
   while [[ -z "$url" && $count -lt 5 ]]; do
@@ -50,12 +52,19 @@ kill_program(){
   fi
   program="$1"
 
-  EXISTING_PIDS=$(pgrep -f "$program" || true)
-if [ -n "$EXISTING_PIDS" ]; then
-  echo "Killing existing $program processes: $EXISTING_PIDS"
-  kill -9 $EXISTING_PIDS
-  sleep 1
-fi
+  # Prefer pgrep when available; otherwise fall back to ps+grep.
+  if command -v pgrep >/dev/null 2>&1; then
+    EXISTING_PIDS=$(pgrep -f "$program" || true)
+  else
+    # Use ps to list processes, then filter. Use grep -F to match literal string.
+    EXISTING_PIDS=$(ps -eo pid,cmd --no-headers | grep -v grep | grep -F -- "$program" | awk '{print $1}' || true)
+  fi
+
+  if [ -n "$EXISTING_PIDS" ]; then
+    echo "Killing existing $program processes: $EXISTING_PIDS"
+    kill -9 $EXISTING_PIDS || true
+    sleep 1
+  fi
 
 }
 
