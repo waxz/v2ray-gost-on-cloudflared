@@ -27,7 +27,7 @@ SUB_VMESS_PATH="/tmp/sub_vmess.txt"
 V2_CONFIG_PATH="/usr/local/etc/v2ray/config.json"
 V2_LOG_DIR="/var/log/v2ray"
 V2RAY_LOG="/tmp/v2ray.log"
-CLOUDFLARED_LOG="/tmp/cloudflared-tunnel.log"
+CLOUDFLARED_LOG="/tmp/cloudflared-tunnel-$PORT.log"
 WAIT_TIMEOUT=60
 # ---------------------------------------------------
 
@@ -143,40 +143,20 @@ if ! ss -ltnp | grep -q "127.0.0.1:$PORT"; then
     exit 1
 fi
 echo "✅ V2Ray listening on 127.0.0.1:$PORT"
-
 # --- 7. Start Cloudflared Tunnel ---
 echo "=== Starting cloudflared tunnel ==="
-mkdir -p "$(dirname "$CLOUDFLARED_LOG")"
-: > "$CLOUDFLARED_LOG"
-
-# 1. NO_PROXY: Ensure local connection doesn't route externally
-# 2. url "http://127.0.0.1": Explicitly force IPv4 to avoid localhost/IPv6 issues
-# 3. --no-autoupdate: Prevent process restart churn
-env NO_PROXY="localhost,127.0.0.1" \
-nohup setsid cloudflared tunnel \
-    --url "http://127.0.0.1:$PORT" \
-    --no-autoupdate \
-    --logfile "$CLOUDFLARED_LOG" \
-    > /dev/null 2>&1 &
-
-CF_PID=$!
-disown $CF_PID
-sleep 1
+/bin/setup_cftunnel.sh "$PORT"
 
 # --- 8. Wait for Public URL ---
 echo "Waiting for tunnel URL..."
-END_TIME=$(( $(date +%s) + WAIT_TIMEOUT ))
 PUBLIC_URL=""
-while [ "$(date +%s)" -le "$END_TIME" ]; do
-    PUBLIC_URL=$(grep -Eo 'https?://[A-Za-z0-9.-]+\.trycloudflare\.com' "$CLOUDFLARED_LOG" | head -n1 || true)
-    if [ -n "$PUBLIC_URL" ]; then break; fi
-    sleep 1
-done
-
+PUBLIC_URL=$(grep -Eo 'https?://[A-Za-z0-9.-]+\.trycloudflare\.com' "$CLOUDFLARED_LOG" | head -n1 || true)
+    
 if [ -z "$PUBLIC_URL" ]; then
     echo "❌ Failed to obtain URL. Check log: $CLOUDFLARED_LOG"
     exit 1
 fi
+
 echo "✅ URL: $PUBLIC_URL"
 PUBLIC_HOST=$(echo "$PUBLIC_URL" | sed -E 's#^https?://([^/:]+).*#\1#')
 

@@ -101,7 +101,7 @@ extract_var() {
 
 
 extract_all_env() {
-    grep -E '^(export +)?[A-Za-z_][A-Za-z0-9_]*=' "$BASHRC" \
+    grep -E '^(export +)?[A-Za-z_][A-Za-z0-9_]*=' "$VARFILE" \
     | sed -E 's/#.*$//' \
     | sed -E 's/^[ \t]+|[ \t]+$//g' \
     | while IFS= read -r line; do
