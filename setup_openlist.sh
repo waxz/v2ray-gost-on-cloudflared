@@ -18,6 +18,7 @@ for var in JSONBINKEY JSONBINURL JSONBINOPENLISTDATAPATH JSONBINOPENLISTPATH FIL
         exit 1
     fi
 done
+
 # ------------------ Configuration ------------------
 PORT=5244
 FILEN_PORT=5255
@@ -26,22 +27,53 @@ OPENLIST_LOG="/tmp/openlist-$PORT.log"
 FILEN_LOG="/tmp/filen-$FILEN_PORT.log"
 WAIT_TIMEOUT=60
 
-curl "$JSONBINURL/$JSONBINOPENLISTDATAPATH/?key=$JSONBINKEY" -o my_archive.tar.gz
-mkdir -p /tmp/openlist_data
-tar -xzvf my_archive.tar.gz -C /tmp/openlist_data
-# openlist admin set "$JSONBINKEY" --data /tmp/openlist_data/data
-nohup setsid bash -c "cd /tmp/openlist_data && openlist admin set "$JSONBINKEY" && openlist server" >"$OPENLIST_LOG" 2>&1 &
+OUTPUTFILE="/tmp/my_archive.tar.gz"
+CONFIGPATH="/tmp/openlist_data"
+mkdir -p $CONFIGPATH
+echo OUTPUTFILE $OUTPUTFILE
+# if [ -f "$OUTPUTFILE" ] ; then rm $OUTPUTFILE; fi
 
+echo "=== 1. Downloading OpenList Data from JSONBIN ==="
+if [ ! -f $OUTPUTFILE ] ; then
+  echo "$OUTPUTFILE does not exist, downloading..."
+  curl "$JSONBINURL/$JSONBINOPENLISTDATAPATH/?key=$JSONBINKEY" -o $OUTPUTFILE
+fi
+
+tarvalid=$(tar -tf $OUTPUTFILE &> /dev/null; echo $?)
+if [ "$tarvalid" -eq "0" ]; then 
+  echo "$OUTPUTFILE is valid, extracting..." 
+  echo "Extracting to $CONFIGPATH"
+  tar -xzvf $OUTPUTFILE -C $CONFIGPATH
+  
+else
+ echo "$OUTPUTFILE is not valid, initializing new openlist config"
+fi
+
+
+
+echo "=== 2. Setting up OpenList Configuration ==="
+# openlist admin set "$JSONBINKEY" --data /tmp/openlist_data/data
+cd $CONFIGPATH && openlist admin set $JSONBINKEY
+cat $CONFIGPATH/data/config.json | jq  '.log.name="/tmp/.openlist/log.log"' |sponge $CONFIGPATH/data/config.json
+if [ -d "$CONFIGPATH/data/log" ] ; then echo "removing log file" ;rm -r "$CONFIGPATH/data/log"; fi
+
+tar -czvf $OUTPUTFILE $CONFIGPATH/data/
+curl "$JSONBINURL/$JSONBINOPENLISTDATAPATH/?key=$JSONBINKEY" --data-binary @$OUTPUTFILE
+
+nohup setsid bash -c "cd $CONFIGPATH && openlist server" >"$OPENLIST_LOG" 2>&1 &
+sleep 3
+
+echo "=== 3. Starting Filen WebDAV Server ==="
 nohup setsid bash -c "filen webdav --email $FILEN_EMAIL --password $FILEN_PASSWORD --w-user $JSONBINKEY --w-password $JSONBINKEY --w-port $FILEN_PORT" > "$FILEN_LOG" 2>&1 &
 sleep 3
-# --- 2. Start Cloudflared Tunnel ---
-echo "=== Starting cloudflared tunnel for OpenList and Filen ==="
+# --- 5. Start Cloudflared Tunnel ---
+echo "=== 4. Starting cloudflared tunnel for OpenList and Filen ==="
 /bin/setup_cftunnel.sh "$PORT"
 
 
 
 # --- 6. Wait for Public URL ---
-echo "Waiting up to $WAIT_TIMEOUT seconds for cloudflared public URL..."
+echo "=== 6. Waiting up to $WAIT_TIMEOUT seconds for cloudflared public URL..."
 PUBLIC_URL=""
 
 PUBLIC_URL=$(grep -Eo 'https?://[A-Za-z0-9.-]+\.trycloudflare\.com' "$CLOUDFLARED_LOG" | head -n1 || true)
@@ -60,6 +92,14 @@ echo "Expose Local:    127.0.0.1:$PORT"
 echo "Public URL:    $PUBLIC_URL"
 echo "Log File:      $CLOUDFLARED_LOG"
 echo "Updating JSONBIN..."
+echo "$JSONBINURL/$JSONBINOPENLISTPATH/?key=$JSONBINKEY&q=url" "-->" "$PUBLIC_URL"
+echo "$JSONBINURL/$JSONBINOPENLISTPATH/?key=$JSONBINKEY&r=1"
 
 curl -s "$JSONBINURL/$JSONBINOPENLISTPATH/?key=$JSONBINKEY&q=url" -d "$PUBLIC_URL"
 echo "" # Newline for clean exit
+while true; do
+inotifywait -e modify,create,delete -r $CONFIGPATH && \
+tar -czvf $OUTPUTFILE $CONFIGPATH/data/ && \
+curl "$JSONBINURL/$JSONBINOPENLISTDATAPATH/?key=$JSONBINKEY" --data-binary @$OUTPUTFILE && \
+echo "✅ Openlist data updated to JSONBIN." 
+done

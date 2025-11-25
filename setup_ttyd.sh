@@ -131,6 +131,7 @@ echo "TTYD Local:    127.0.0.1:$PORT"
 echo "Public URL:    $PUBLIC_URL"
 echo "Log File:      $CLOUDFLARED_LOG"
 echo "Updating JSONBIN..."
-
+echo "$JSONBINURL/$JSONBINAWSTTYDPATH/?key=$JSONBINKEY&q=url" "-->" "$PUBLIC_URL"
+echo "$JSONBINURL/$JSONBINAWSTTYDPATH/?key=$JSONBINKEY&r=1"
 curl -s "$JSONBINURL/$JSONBINAWSTTYDPATH/?key=$JSONBINKEY&q=url" -d "$PUBLIC_URL"
 echo "" # Newline for clean exit

@@ -1,0 +1,6 @@
+export JSONBINKEY=yourapi
+export JSONBINURL=https://jsonbin.yoururl.xyz
+export JSONBINV2RAYPATH=v2ray/aws
+export JSONBINAWSTTYDPATH=ttyd/aws
+export JSONBINOPENLISTDATAPATH=openlist/data.tar.gz
+export JSONBINOPENLISTPATH=openlist/share

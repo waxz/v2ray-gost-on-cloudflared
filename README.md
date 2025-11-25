@@ -1,69 +1,62 @@
 # bash_scripts
-scripts to setup proxy on linux/windows, cloudflared tunnel urls are stored in [JSONBIN](https://github.com/waxz/json-bin)
+scripts to setup v2ray, gost and openlist on Ubuntu(aws vps or koyeb) and Windows.
 
-- gost server/client over cloudflare tunnel, [proxy_gost_cf.sh](proxy_gost_cf.sh)
-- v2ray server over cloudflare tunnel, [run_v2ray.sh](run_v2ray.sh)
-- ssh/ttyd over cloudflare tunnel
-- v2raya on windows
-- tor on linux, [setup_tor.sh](setup_tor.sh),[setup_v2ray_outbound.sh](setup_v2ray_outbound.sh) 
+# Notice
+This project heavily relies on [JSONBIN](https://github.com/waxz/json-bin).
+Please deploy it first.
 
-
-## web
-
-### ttyd
-visit your jsonbin domain
-```
-https://<YOUR_JSONBIN_DOMAIN>/ttyd/aws/?key=<YOUR_JSONBINKEY>&redirect=1
-```
-## v2ray subscription
-```
-https://<YOUR_JSONBIN_DOMAIN>/v2ray/aws/?key=<YOUR_JSONBINKEY>&q=sub
-```
-
-## windows
-
-### setup v2raya
-```shell
-sudo -E bash ./download_v2raya.ps1
-
-sudo -E bash ./run_v2ray.ps1
-```
-
-### setup gost proxy client
-```shell
-sudo -E bash ./proxy_gost_cf.ps1
-```
-
-## linux
-
-add enviorment to ~/.bashrc 
+## Prepare
+#### JSONBIN VARS
 
 ```bash
-export JSONBINKEY="yourapi"
-export JSONBINURL="https://yoururl.xyz"
-export JSONBINV2RAYPATH="yourpath"
+cp .vars.example .vars
 ```
+Modify `.vars` according to your needs.
 
-### install cron jobs to start gost server
+
+#### Install dependencies
 
 ```bash
-sudo -E bash ./install_proxy_gost_cf.sh
+sudo -E ./download.sh
+sudo -E ./install_cron_jobs.sh
 ```
 
-### run v2ray and cloudflared tunnel
+
+## openlist
+
+### server on Ubuntu
+
+All jobs will run at startup.
+You can also run script manually.
+Admin password is set to `JSONBINKEY` in `.vars`.
 
 ```bash
-sudo -E bash ./run_v2ray.sh 
+sudo -E ./setup_openlist.sh
 ```
 
+#### webdav endpoint
+```
+https://<JSONBINURL>/_forward/<JSONBINOPENLISTPATH>/<JSONBINV2RAYPATH>/urlsplit/dav
+```
 
-### setup gost proxy client
+### raidrive on Windows
+[clients for webdav](https://doc.oplist.org/guide/advanced/webdav#client-software)
+
+[raidrive](https://www.raidrive.com/)
+
+![raidrive-webdav](assets/raidrive-webdav.png)
+
+
+## v2ray
+
+
+### v2ray on Ubuntu
 
 ```bash
-./run_gost_cf_client.sh
+sudo -E bash ./setup_v2ray.sh 
 ```
 
-### setup tor exitnode
+### tor on Ubuntu
 
 ```bash
 sudo -E bash ./setup_tor.sh
@@ -75,7 +68,42 @@ sudo -E bash ./setup_tor.sh
 sudo -E bash ./setup_v2ray_outbound.sh tor
 ```
 
-### cron
+
+
+### v2ray subscription
+```
+https://<JSONBINURL>/<JSONBINV2RAYPATH>/?key=<JSONBINKEY>&q=sub
+```
+
+### ttyd
+
+```bash
+sudo -E bash ./setup_ttyd.sh 
+```
+
+visit your jsonbin domain
+```
+https://<JSONBINURL>/<JSONBINAWSTTYDPATH>/?key=<JSONBINKEY>&redirect=1
+```
+
+
+## windows
+
+### v2raya
+```shell
+./download_v2raya.ps1
+
+./run_v2ray.ps1
+```
+
+### gost
+```shell
+./proxy_gost_cf.ps1
+```
+
+### Reference
+
+#### cron
 https://askubuntu.com/questions/2368/how-do-i-set-up-a-cron-job
 https://stackoverflow.com/questions/10193788/restarting-cron-after-changing-crontab-file
 https://unix.stackexchange.com/questions/458713/how-are-files-under-etc-cron-d-used
