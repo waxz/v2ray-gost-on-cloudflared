@@ -52,6 +52,8 @@ fi
 
 
 echo "=== 2. Setting up OpenList Configuration ==="
+
+kill_program "openlist server"
 # openlist admin set "$JSONBINKEY" --data /tmp/openlist_data/data
 cd $CONFIGPATH && openlist admin set $JSONBINKEY
 cat $CONFIGPATH/data/config.json | jq  '.log.name="/tmp/.openlist/log.log"' |sponge $CONFIGPATH/data/config.json
