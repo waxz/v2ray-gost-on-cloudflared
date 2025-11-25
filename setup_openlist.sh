@@ -101,5 +101,5 @@ while true; do
 inotifywait -e modify,create,delete -r $CONFIGPATH && \
 tar -czvf $OUTPUTFILE $CONFIGPATH/data/ && \
 curl "$JSONBINURL/$JSONBINOPENLISTDATAPATH/?key=$JSONBINKEY" --data-binary @$OUTPUTFILE && \
-echo "✅ Openlist data updated to JSONBIN." 
+echo "✅ Openlist data updated to JSONBIN." && sleep 10
 done

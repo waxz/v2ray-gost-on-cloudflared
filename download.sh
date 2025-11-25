@@ -2,8 +2,7 @@
 source ./bash_utils.sh
 
 #=== 1. Ensure libraries Installed ===#
-libs=("jq" "curl" "git")
-
+libs=("jq" "curl" "git" "moreutils" "inotify-tools")
 # Iterate over the array elements
 for item in "${libs[@]}"; do
   echo "Processing item: $item"
